@@ -1,0 +1,24 @@
+{
+  "name": "offload",
+  "display_name": "Offload",
+  "version": "0.1.0",
+  "description": "Delegate a real-world digital task to a vetted human, straight from your AI chat. Get an instant AI quote, post the task, and track it to delivery — escrow-protected, never asks for your passwords.",
+  "publisher": "Offload",
+  "homepage": "https://offloads.io",
+  "privacy_policy": "https://offloads.io/trust",
+  "categories": ["productivity", "automation", "marketplace"],
+  "tools": [
+    {
+      "name": "offload_get_quote",
+      "description": "Free, instant AI quote for a task (category, time estimate, fair price). No signup."
+    },
+    {
+      "name": "offload_post_task",
+      "description": "Post a task to the Offload marketplace; returns an escrow-protected checkout link."
+    },
+    {
+      "name": "offload_task_status",
+      "description": "Check the status of a posted task by ID."
+    }
+  ]
+}
