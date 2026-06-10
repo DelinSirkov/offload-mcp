@@ -42,12 +42,18 @@ Add to your MCP config (e.g. `claude_desktop_config.json`):
 
 ## Remote / hosted (for the Connectors Directory)
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/DelinSirkov/offload-mcp)
+
+One-click deploy with the included `Dockerfile` + `render.yaml`. See **[DEPLOY.md](./DEPLOY.md)** for the 3-minute, no-terminal walkthrough.
+
+Or run it yourself:
+
 ```bash
 npm run build
 npm run start:http   # POST /mcp  (Streamable HTTP), GET /healthz
 ```
 
-Deploy this anywhere (Render, Fly, Railway, a container) to get a stable `https://…/mcp` URL, then submit it to the [Anthropic Connectors Directory](https://claude.com/docs/connectors/building/submission). A linked privacy policy is required — we point to `https://offloads.io/trust`.
+Deploy anywhere (Render, Fly, Railway, a container) to get a stable `https://…/mcp` URL, then submit it to the [Anthropic Connectors Directory](https://claude.com/docs/connectors/building/submission). A linked privacy policy is required — we point to `https://offloads.io/trust`.
 
 ## Configuration
 

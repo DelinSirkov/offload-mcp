@@ -1,0 +1,14 @@
+# Render Blueprint — one-click deploy of the Offload MCP remote server.
+# In Render: New → Blueprint → connect the offload-mcp repo → Apply.
+services:
+  - type: web
+    name: offload-mcp
+    runtime: docker
+    plan: free
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      - key: OFFLOAD_API_BASE
+        value: https://offloads.io
+      - key: OFFLOAD_API_KEY
+        sync: false # set this in the Render dashboard if you enable post_task/task_status
