@@ -1,0 +1,31 @@
+name: keep-warm
+
+# Pings the hosted Offload MCP so the Render free-tier instance never spins down.
+# A cold start adds ~12s to the first request (measured 2026-06-23: 12,462ms cold vs
+# 322ms warm), which times out AI tool calls and leaks `offload_get_quote` conversion —
+# the first step of the revenue funnel. Free on public repos.
+# Durable fix = move Render off the free tier; this is the zero-cost mitigation until then.
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"   # every 10 min (Render free tier spins down after ~15 min idle)
+  workflow_dispatch: {}        # allow a manual run from the Actions tab
+
+permissions:
+  contents: read
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Warm the Offload MCP endpoint
+        run: |
+          set -e
+          start=$(date +%s%3N)
+          code=$(curl -s -o /dev/null -w "%{http_code}" -m 50 "https://offload-mcp.onrender.com/healthz" || echo "000")
+          end=$(date +%s%3N)
+          echo "GET /healthz -> HTTP $code in $((end-start))ms"
+          # Non-2xx is informational only — never fail the keep-warm job (a transient blip
+          # shouldn't spam the Actions failure log; the offload-mcp-health-watch task alerts).
+          if [ "$code" != "200" ]; then echo "::warning::non-200 from /healthz ($code)"; fi
