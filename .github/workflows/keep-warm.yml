@@ -5,27 +5,39 @@ name: keep-warm
 # 322ms warm), which times out AI tool calls and leaks `offload_get_quote` conversion —
 # the first step of the revenue funnel. Free on public repos.
 # Durable fix = move Render off the free tier; this is the zero-cost mitigation until then.
+#
+# 2026-07-01: GitHub silently throttles a "*/10 * * * *" schedule on a low-activity repo —
+# measured actual gaps between runs widening from ~70min (06-28) to 250-300min (07-01),
+# well past Render's ~15min sleep window, so the mitigation was quietly not working.
+# Fix: each triggered run now loops internally (ping every ~9min for up to 5.5h) instead
+# of pinging once and exiting, so a single run self-covers the gap even when the next
+# scheduled trigger is delayed. `concurrency` ensures only one loop runs at a time.
 
 on:
   schedule:
-    - cron: "*/10 * * * *"   # every 10 min (Render free tier spins down after ~15 min idle)
+    - cron: "*/10 * * * *"   # best-effort trigger; the internal loop is the real coverage
   workflow_dispatch: {}        # allow a manual run from the Actions tab
 
 permissions:
   contents: read
 
+concurrency:
+  group: keep-warm
+  cancel-in-progress: true
+
 jobs:
   ping:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 330   # ~5.5h — comfortably covers the worst observed gap (~300min)
     steps:
-      - name: Warm the Offload MCP endpoint
+      - name: Warm the Offload MCP endpoint on a loop
         run: |
-          set -e
-          start=$(date +%s%3N)
-          code=$(curl -s -o /dev/null -w "%{http_code}" -m 50 "https://offload-mcp.onrender.com/healthz" || echo "000")
-          end=$(date +%s%3N)
-          echo "GET /healthz -> HTTP $code in $((end-start))ms"
-          # Non-2xx is informational only — never fail the keep-warm job (a transient blip
-          # shouldn't spam the Actions failure log; the offload-mcp-health-watch task alerts).
-          if [ "$code" != "200" ]; then echo "::warning::non-200 from /healthz ($code)"; fi
+          end=$(( $(date +%s) + 330*60 ))
+          while [ "$(date +%s)" -lt "$end" ]; do
+            start=$(date +%s%3N)
+            code=$(curl -s -o /dev/null -w "%{http_code}" -m 50 "https://offload-mcp.onrender.com/healthz" || echo "000")
+            fin=$(date +%s%3N)
+            echo "GET /healthz -> HTTP $code in $((fin-start))ms at $(date -u +%H:%M:%S)"
+            if [ "$code" != "200" ]; then echo "::warning::non-200 from /healthz ($code)"; fi
+            sleep 540   # 9 min — stays under Render's ~15min idle-sleep window
+          done
