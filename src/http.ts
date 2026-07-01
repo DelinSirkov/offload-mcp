@@ -11,7 +11,7 @@ import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/
 import { createOffloadServer } from "./server.js";
 
 const app = express();
-app.use(express.json());
+app.use(express.json({ limit: "64kb" })); // largest legit body is a task description; cap it
 
 app.get("/healthz", (_req, res) => {
   res.json({ ok: true, service: "offload-mcp" });

@@ -10,12 +10,12 @@ Canonical links:
 
 | Registry | Status | Live URL | Last checked | Note |
 |---|---|---|---|---|
-| Glama | NOT FOUND | — | 2026-06-22 18:09 UTC | No listing surfaced. Glama auto-discovers public GitHub MCP repos; once repo is public it should index within ~a day. To speed up: sign in w/ GitHub, claim/add repo. |
-| mcp.so | NOT FOUND | — | 2026-06-22 18:09 UTC | No listing surfaced. Manual submit at mcp.so/submit (repo URL + blurb). |
-| Smithery | NOT FOUND | — | 2026-06-22 18:09 UTC | No listing surfaced. Manual add at smithery.ai (connect GitHub → select repo; list remote Render endpoint). |
-| PulseMCP | NOT FOUND | — | 2026-06-22 18:09 UTC | No listing surfaced. Manual submit at pulsemcp.com/submit (repo + /mcp URL + blurb). |
-| awesome-mcp-servers (punkpeye) | PR OPEN | https://github.com/punkpeye/awesome-mcp-servers/pull/8583 | 2026-06-23 | ✅ PR #8583 opened (DelinSirkov:add-offload-mcp → main; under Workplace & Productivity, alphabetical after delega-dev; "Able to merge"). Awaiting maintainer merge. |
-| Anthropic Connectors Directory | GATED (do not submit) | — | 2026-06-22 18:09 UTC | Requires Owner of a Team/Enterprise Claude org w/ directory-management access. Decision pending from Deo (org upgrade). Do NOT auto-submit. |
+| Glama | NOT FOUND | — | 2026-06-26 18:45 UTC | No listing surfaced. Glama auto-discovers public GitHub MCP repos; once repo is public it should index within ~a day. To speed up: sign in w/ GitHub, claim/add repo. |
+| mcp.so | NOT FOUND | — | 2026-06-26 18:45 UTC | No listing surfaced. Manual submit at mcp.so/submit (repo URL + blurb). |
+| Smithery | NOT FOUND | — | 2026-06-26 18:45 UTC | No listing surfaced. Manual add at smithery.ai (connect GitHub → select repo; list remote Render endpoint). |
+| PulseMCP | NOT FOUND | — | 2026-06-26 18:45 UTC | No listing surfaced. Manual submit at pulsemcp.com/submit (repo + /mcp URL + blurb). |
+| awesome-mcp-servers (punkpeye) | PR OPEN | https://github.com/punkpeye/awesome-mcp-servers/pull/8583 | 2026-06-26 | ✅ PR #8583 opened (DelinSirkov:add-offload-mcp → main; under Workplace & Productivity, alphabetical after delega-dev; "Able to merge"). Status as of 2026-06-23 was "Able to merge" — merge state unconfirmed as of 2026-06-26. |
+| Anthropic Connectors Directory | GATED (do not submit) | — | 2026-06-26 18:45 UTC | Requires Owner of a Team/Enterprise Claude org w/ directory-management access. Decision pending from Deo (org upgrade). Do NOT auto-submit. |
 
 ## Check method / caveats
 - Unattended read path is constrained: `web_fetch` is provenance-locked (can't open registry pages directly), and the browser path is blocked by 3-browser ambiguity (can't resolve without Deo present). Checks rely on domain-scoped web search, which can lag a registry's own index.

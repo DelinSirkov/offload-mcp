@@ -12,6 +12,8 @@ Offload's MCP server gives any MCP client (Claude, Cowork, Cursor, ChatGPT, …)
 
 > **The wedge:** you're mid-conversation, hit something you don't want to do, and instead of context-switching you just say *"offload this."* The AI does the automatable ~80%; a vetted human finishes the rest. Escrow-protected, and **Offload never asks for your passwords.**
 
+**Interactive quote card (MCP Apps).** In hosts that support MCP Apps (Claude, Claude Desktop, VS Code), `offload_get_quote` renders an inline card with the category, time estimate, price, and the AI-vs-human split, plus a one-tap **Post task** button that returns the escrow checkout link. Every other host shows the same information as text, so nothing is lost.
+
 ## Quick start (local / stdio)
 
 ```bash
@@ -82,3 +84,6 @@ Same server, multiple front doors: [Glama](https://glama.ai), [mcp.so](https://m
 ## License
 
 MIT — see [LICENSE](./LICENSE).
+
+## 2026-06-15 (Claude, portfolio pass)
+.gitignore secured BEFORE any push: added `health-log.jsonl` (the local monitoring log was NOT ignored - `*.log` does not match `.jsonl`) and `dist-ui/` (the UI build - `dist/` does not match `dist-ui/`). The health-monitor is now safe to stage. GATE (Deo): the actual commit + push of offload-mcp to PUBLIC GitHub is your go - verify nothing sensitive is in the diff first.

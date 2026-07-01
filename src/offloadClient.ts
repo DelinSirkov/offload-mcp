@@ -54,12 +54,20 @@ export class OffloadClient {
     };
     if (this.apiKey) headers["Authorization"] = `Bearer ${this.apiKey}`;
 
-    const res = await fetch(`${this.base}${path}`, { ...init, headers });
-    const text = await res.text();
-    if (!res.ok) {
-      throw new Error(`Offload API ${res.status} on ${path}: ${text.slice(0, 300)}`);
+    // Bound every backend call so a slow or hung endpoint can never pin a connection
+    // indefinitely (the quote endpoint can take ~15s; 30s leaves headroom).
+    const ac = new AbortController();
+    const timer = setTimeout(() => ac.abort(), 30_000);
+    try {
+      const res = await fetch(`${this.base}${path}`, { ...init, headers, signal: ac.signal });
+      const text = await res.text();
+      if (!res.ok) {
+        throw new Error(`Offload API ${res.status} on ${path}: ${text.slice(0, 300)}`);
+      }
+      return (text ? JSON.parse(text) : {}) as T;
+    } finally {
+      clearTimeout(timer);
     }
-    return (text ? JSON.parse(text) : {}) as T;
   }
 
   getQuote(description: string): Promise<Quote> {

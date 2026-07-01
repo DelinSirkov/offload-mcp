@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Offload Quote</title>
+  <style>
+    :root {
+      --ink: #16161d;
+      --muted: #6b7280;
+      --brand: #6452e9;
+      --brand-dark: #4f3fd0;
+      --bg: #ffffff;
+      --soft: #f4f3ff;
+      --line: #e7e6f4;
+      --ok: #0f9d58;
+      --err: #d93838;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: transparent; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--ink);
+      padding: 4px;
+    }
+    .card {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 20px;
+      max-width: 480px;
+      box-shadow: 0 4px 24px rgba(100, 82, 233, 0.08);
+    }
+    .brandline { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+    .logo {
+      width: 22px; height: 22px; border-radius: 7px;
+      background: linear-gradient(135deg, var(--brand), #9a8cf5);
+      display: inline-flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 12px; font-weight: 800;
+    }
+    .brandline b { font-size: 13px; letter-spacing: .02em; }
+    .brandline span { font-size: 11px; color: var(--muted); }
+    .pill {
+      display: inline-block; font-size: 11px; font-weight: 600;
+      color: var(--brand-dark); background: var(--soft);
+      border: 1px solid var(--line); border-radius: 999px;
+      padding: 3px 10px; margin-bottom: 10px;
+    }
+    .summary { font-size: 14px; line-height: 1.5; margin-bottom: 14px; }
+    .meta { display: flex; gap: 14px; margin-bottom: 14px; flex-wrap: wrap; }
+    .meta div { font-size: 12px; color: var(--muted); }
+    .meta div b { display: block; font-size: 15px; color: var(--ink); }
+    .price { font-size: 30px; font-weight: 800; color: var(--brand-dark); }
+    .price small { font-size: 12px; font-weight: 500; color: var(--muted); }
+    .bar { height: 6px; background: var(--soft); border-radius: 999px; overflow: hidden; margin: 4px 0 2px; }
+    .bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--brand), #9a8cf5); border-radius: 999px; }
+    .note { font-size: 11.5px; color: var(--muted); margin-bottom: 14px; line-height: 1.45; }
+    .row { display: flex; gap: 8px; margin-bottom: 12px; }
+    input[type="email"] {
+      flex: 1; border: 1px solid var(--line); border-radius: 10px;
+      padding: 9px 12px; font: inherit; font-size: 13px;
+    }
+    input[type="email"]:focus { outline: 2px solid var(--brand); border-color: transparent; }
+    .rushwrap { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); white-space: nowrap; }
+    button.cta {
+      width: 100%; border: none; border-radius: 12px;
+      background: var(--brand); color: #fff;
+      font: inherit; font-size: 14.5px; font-weight: 700;
+      padding: 12px; cursor: pointer;
+      transition: background .15s;
+    }
+    button.cta:hover { background: var(--brand-dark); }
+    .tiny { text-align: center; font-size: 10.5px; color: var(--muted); margin-top: 8px; }
+    .spinner {
+      width: 26px; height: 26px; margin: 18px auto;
+      border: 3px solid var(--soft); border-top-color: var(--brand);
+      border-radius: 50%; animation: spin .8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .center { text-align: center; padding: 10px 0; }
+    .check { font-size: 30px; color: var(--ok); }
+    .taskid { font-family: ui-monospace, monospace; font-size: 11px; color: var(--muted); margin: 6px 0 12px; word-break: break-all; }
+    a.cta {
+      display: block; text-align: center; text-decoration: none;
+      background: var(--brand); color: #fff; border-radius: 12px;
+      font-size: 14.5px; font-weight: 700; padding: 12px;
+    }
+    a.cta:hover { background: var(--brand-dark); }
+    .errmsg { font-size: 13px; color: var(--err); line-height: 1.5; }
+    #quote, #posting, #success, #error { display: none; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="brandline">
+      <span class="logo">O</span>
+      <b>Offload</b>
+      <span>· AI scopes it. A human gets it done.</span>
+    </div>
+
+    <div id="loading"><div class="spinner"></div></div>
+
+    <div id="quote">
+      <span class="pill" id="category"></span>
+      <p class="summary" id="summary"></p>
+      <div class="meta">
+        <div><b id="price" class="price"></b>fixed price, escrow-protected</div>
+        <div><b id="time"></b>estimated</div>
+      </div>
+      <div class="bar"><i id="autobar" style="width:0%"></i></div>
+      <div class="note" id="autonote"></div>
+      <div class="note" id="sensitive"></div>
+      <div class="row">
+        <input type="email" id="email" placeholder="email for updates (optional)" />
+        <label class="rushwrap"><input type="checkbox" id="rush" /> rush</label>
+      </div>
+      <button class="cta" id="post-btn">Post this task</button>
+      <div class="tiny">Pay only on approval · vetted human Doers · never asks for passwords</div>
+    </div>
+
+    <div id="posting" class="center">
+      <div class="spinner"></div>
+      <div class="note">Posting your task…</div>
+    </div>
+
+    <div id="success" class="center">
+      <div class="check">✓</div>
+      <div><b>Task posted.</b></div>
+      <div class="taskid" id="task-id"></div>
+      <a class="cta" id="checkout-link" href="#" target="_blank" rel="noopener">Fund it — escrow checkout</a>
+      <div class="tiny">Money is held in escrow and only released when you approve the work.</div>
+    </div>
+
+    <div id="error" class="center">
+      <p class="errmsg" id="error-msg"></p>
+    </div>
+  </div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
